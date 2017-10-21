@@ -1,3 +1,10 @@
+# Hardfork prepare
+=================
++Followed Dash base code 
++Fix deadlocks on cs_vSend in RequestGovernanceObject 
++Applied ZeroMQ for later use
++Upgrade PoS protocol v0.4
+
 # Version 2.2.1
 ===============
 +Upgraded QT wallet UI
