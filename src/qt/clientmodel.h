@@ -48,6 +48,15 @@ public:
     QString clientName() const;
     QString formatClientStartupTime() const;
 
+    QString formatI2PNativeFullVersion() const;
+    int getNumI2PConnections() const;
+    bool isI2POnly() const;
+    bool isI2PAddressGenerated() const;
+//    I2PSession& getI2PSession() const;      // ??
+//    bool isPermanent
+
+
+
 private:
     OptionsModel *optionsModel;
 

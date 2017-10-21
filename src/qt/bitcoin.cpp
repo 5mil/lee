@@ -1,7 +1,7 @@
 /*
  * W.J. van der Laan 2011-2012
  */
-
+// Added i2p
 #include <QApplication>
 
 #include "bitcoingui.h"
@@ -43,26 +43,63 @@ Q_IMPORT_PLUGIN(qtaccessiblewidgets)
 static BitcoinGUI *guiref;
 static QSplashScreen *splashref;
 
-static void ThreadSafeMessageBox(const std::string& message, const std::string& caption, unsigned int style)
+static void ThreadSafeShowGeneratedI2PAddress(const std::string& caption, const std::string& pub, const std::string& priv, const std::string& b32, const std::string& configFileName)
+{
+    if(guiref)
+    {
+        QMetaObject::invokeMethod(guiref, "showGeneratedI2PAddr",
+                                   GUIUtil::blockingGUIThreadConnection(),
+                                   Q_ARG(QString, QString::fromStdString(caption)),
+                                   Q_ARG(QString, QString::fromStdString(pub)),
+                                   Q_ARG(QString, QString::fromStdString(priv)),
+                                   Q_ARG(QString, QString::fromStdString(b32)),
+                                   Q_ARG(QString, QString::fromStdString(configFileName)));
+    }
+    else
+    {
+        std::string msg = "\nIf you want to use a permanent I2P-address you have to set a \'mydestination\' option in the configuration file: ";
+        msg += configFileName;
+        msg += "\nGenerated address:\n";
+
+        msg += "\nAddress + private key (save this text in the configuration file and keep it secret):\n";
+        msg += priv;
+
+        msg += "\n\nAddress (you can make it public):\n";
+        msg += pub;
+
+        msg += "\n\nShort base32-address:\n";
+        msg += b32;
+        msg += "\n\n";
+
+        printf("%s: %s\n", caption.c_str(), msg.c_str());
+        fprintf(stderr, "%s: %s\n", caption.c_str(), msg.c_str());
+    }
+}
+
+static bool ThreadSafeMessageBox(const std::string& message, const std::string& caption, unsigned int style)
 {
     // Message from network thread
     if(guiref)
     {
         bool modal = (style & CClientUIInterface::MODAL);
+        bool ret = false;
         // In case of modal message, use blocking connection to wait for user to click a button
         QMetaObject::invokeMethod(guiref, "message",
                                    modal ? GUIUtil::blockingGUIThreadConnection() : Qt::QueuedConnection,
                                    Q_ARG(QString, QString::fromStdString(caption)),
                                    Q_ARG(QString, QString::fromStdString(message)),
-                                   Q_ARG(bool, modal),
-                                   Q_ARG(unsigned int, style));
+                                   Q_ARG(unsigned int, style),
+                                   Q_ARG(bool*, &ret));
+        return ret;
     }
     else
     {
-        LogPrintf("%s: %s\n", caption, message);
+        printf("%s: %s\n", caption.c_str(), message.c_str());
         fprintf(stderr, "%s: %s\n", caption.c_str(), message.c_str());
+        return false;
     }
 }
+
 
 static bool ThreadSafeAskFee(int64_t nFeeRequired, const std::string& strCaption)
 {
@@ -209,6 +246,7 @@ int main(int argc, char *argv[])
     // Subscribe to global signals from core
     uiInterface.ThreadSafeMessageBox.connect(ThreadSafeMessageBox);
     uiInterface.ThreadSafeAskFee.connect(ThreadSafeAskFee);
+    uiInterface.ThreadSafeShowGeneratedI2PAddress.connect(ThreadSafeShowGeneratedI2PAddress);
     uiInterface.InitMessage.connect(InitMessage);
     uiInterface.Translate.connect(Translate);
 

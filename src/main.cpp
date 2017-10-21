@@ -3356,9 +3356,20 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         pfrom->fClient = !(pfrom->nServices & NODE_NETWORK);
 
+
+        AddTimeData(pfrom->addr, nTime);
+
+        // Change version
+        pfrom->ssSend.SetVersion(min(pfrom->nVersion, PROTOCOL_VERSION));
+
         // Change version
         pfrom->PushMessage("verack");
         pfrom->ssSend.SetVersion(min(pfrom->nVersion, PROTOCOL_VERSION));
+
+        if (pfrom->nServices & NODE_I2P)
+            pfrom->SetSendStreamType(pfrom->GetSendStreamType() & ~SER_IPADDRONLY);
+        else
+            pfrom->SetSendStreamType(pfrom->GetSendStreamType() & SER_IPADDRONLY);
 
         if (!pfrom->fInbound)
         {
@@ -3427,6 +3438,10 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
     else if (strCommand == "verack")
     {
         pfrom->SetRecvVersion(min(pfrom->nVersion, PROTOCOL_VERSION));
+          if (pfrom->nServices & NODE_I2P)
+            pfrom->SetRecvStreamType(pfrom->GetRecvStreamType() & ~SER_IPADDRONLY);
+        else
+            pfrom->SetRecvStreamType(pfrom->GetRecvStreamType() & SER_IPADDRONLY);
     }
 
 

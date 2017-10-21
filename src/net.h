@@ -50,6 +50,13 @@ void StartNode(boost::thread_group& threadGroup);
 bool StopNode();
 void SocketSendData(CNode *pnode);
 
+
+bool BindListenNativeI2P();
+bool BindListenNativeI2P(SOCKET& hSocket);
+bool IsI2POnly();
+bool IsI2PEnabled();
+
+
 // Signals for message handling
 struct CNodeSignals
 {
@@ -368,10 +375,35 @@ private:
 
     CNode(const CNode&);
     void operator=(const CNode&);
+    int nSendStreamType;
+    int nRecvStreamType;
 
 public:
-    NodeId GetId() const {
-      return id;
+
+    void SetSendStreamType(int nType)
+    {
+        nSendStreamType = nType;
+        ssSend.SetType(nSendStreamType);
+    }
+
+    void SetRecvStreamType(int nType)
+    {
+        nRecvStreamType = nType;
+        for (std::deque<CNetMessage>::iterator it = vRecvMsg.begin(), end = vRecvMsg.end(); it != end; ++it)
+        {
+            it->hdrbuf.SetType(nRecvStreamType);
+            it->vRecv.SetType(nRecvStreamType);
+        }
+    }
+
+    int GetSendStreamType() const
+    {
+        return nSendStreamType;
+    }
+
+    int GetRecvStreamType() const
+    {
+        return nRecvStreamType;
     }
 
     int GetRefCount()

@@ -32,6 +32,14 @@
 #include <signal.h>
 #endif
 
+	#include "i2p.h"
+	#ifdef _MSC_VER
+	// MSVC 64bit is unable to use inline asm
+	#include <intrin.h>
+	#else
+	// GCC Linux or i686-w64-mingw32
+	#include <cpuid.h>
+	#endif
 
 using namespace std;
 using namespace boost;
@@ -48,35 +56,48 @@ unsigned int nMinerSleep;
 bool fUseFastIndex;
 bool fOnlyTor = false;
 
+	
+	// Win32 LevelDB doesn't use filedescriptors, and the ones used for
+	// accessing block files, don't count towards to fd_set size limit
+	// anyway.
+	
+	
+	
+	
+
+	// Used to pass flags to the Bind() function
+	enum BindFlags {
+	    BF_NONE         = 0,
+	    BF_EXPLICIT     = (1U << 0),
+	    BF_REPORT_ERROR = (1U << 1)
+};
+
 //enum Checkpoints::CPMode CheckpointsMode; for anti exploit protection
 
-// Shutdown
+/*
+Shutdown
+Thread management and startup/shutdown:
 
+The network-processing threads are all part of a thread group
+created by AppInit() or the Qt main() function.
 
-//
-// Thread management and startup/shutdown:
-//
-// The network-processing threads are all part of a thread group
-// created by AppInit() or the Qt main() function.
-//
-// A clean exit happens when StartShutdown() or the SIGTERM
-// signal handler sets fRequestShutdown, which triggers
-// the DetectShutdownThread(), which interrupts the main thread group.
-// DetectShutdownThread() then exits, which causes AppInit() to
-// continue (it .joins the shutdown thread).
-// Shutdown() is then
-// called to clean up database connections, and stop other
-// threads that should only be stopped after the main network-processing
-// threads have exited.
-//
-// Note that if running -daemon the parent process returns from AppInit2
-// before adding any threads to the threadGroup, so .join_all() returns
-// immediately and the parent exits from main().
-//
-// Shutdown for Qt is very similar, only it uses a QTimer to detect
-// fRequestShutdown getting set, and then does the normal Qt
-// shutdown thing.
-//
+A clean exit happens when StartShutdown() or the SIGTERM
+signal handler sets fRequestShutdown, which triggers
+the DetectShutdownThread(), which interrupts the main thread group.
+DetectShutdownThread() then exits, which causes AppInit() to
+continue (it .joins the shutdown thread).
+Shutdown() is then
+called to clean up database connections, and stop other
+threads that should only be stopped after the main network-processing
+threads have exited.
+
+Note that if running -daemon the parent process returns from AppInit2
+before adding any threads to the threadGroup, so .join_all() returns
+immediately and the parent exits from main().
+
+Shutdown for Qt is very similar, only it uses a QTimer to detect
+fRequestShutdown getting set, and then does the normal Qt
+shutdown thing.*/
 
 volatile bool fRequestShutdown = false;
 
@@ -124,6 +145,9 @@ void Shutdown()
     delete pwalletMain;
     pwalletMain = NULL;
 #endif
+
+	I2PSession::Instance ().Stop ();
+
     LogPrintf("Shutdown : done\n");
 }
 
@@ -150,6 +174,12 @@ bool static InitWarning(const std::string &str)
 {
     uiInterface.ThreadSafeMessageBox(str, "", CClientUIInterface::MSG_WARNING);
     return true;
+}
+
+bool static BindNativeI2P(/*bool fError = true*/) { //<----------------added i2p
+    if (IsLimited(NET_I2P))
+        return false;
+    return BindListenNativeI2P();
 }
 
 bool static Bind(const CService &addr, bool fError = true) {
@@ -185,6 +215,7 @@ std::string HelpMessage()
     strUsage += "  -connect=<ip>          " + _("Connect only to the specified node(s)") + "\n";
     strUsage += "  -seednode=<ip>         " + _("Connect to a node to retrieve peer addresses, and disconnect") + "\n";
     strUsage += "  -externalip=<ip>       " + _("Specify your own public address") + "\n";
+        "  -onlynet=<net>         " + _("Only connect to nodes in network <net> (IPv4, IPv6 or I2P") + "\n" + //<------------i2p added----------->//
     strUsage += "  -onlynet=<net>         " + _("Only connect to nodes in network <net> (IPv4, IPv6 or Tor)") + "\n";
     strUsage += "  -discover              " + _("Discover own IP address (default: 1 when listening and no -externalip)") + "\n";
     strUsage += "  -irc                   " + _("Find peers using internet relay chat (default: 0)") + "\n";
@@ -209,10 +240,10 @@ std::string HelpMessage()
     strUsage += "  -mininput=<amt>        " + _("When creating transactions, ignore inputs with value less than this (default: 0.01)") + "\n";
     if (fHaveGUI)
         strUsage += "  -server                " + _("Accept command line and JSON-RPC commands") + "\n";
-#if !defined(WIN32)
+
     if (fHaveGUI)
         strUsage += "  -daemon                " + _("Run in the background as a daemon and accept commands") + "\n";
-#endif
+
     strUsage += "  -testnet               " + _("Use the test network") + "\n";
     strUsage += "  -debug=<category>      " + _("Output debugging information (default: 0, supplying <category> is optional)") + "\n";
     strUsage +=                               _("If <category> is not supplied, output all debugging information.") + "\n";
@@ -266,6 +297,15 @@ std::string HelpMessage()
     strUsage += "  -rpcsslcertificatechainfile=<file.cert>  " + _("Server certificate file (default: server.cert)") + "\n";
     strUsage += "  -rpcsslprivatekeyfile=<file.pem>         " + _("Server private key (default: server.pem)") + "\n";
     strUsage += "  -rpcsslciphers=<ciphers>                 " + _("Acceptable ciphers (default: TLSv1.2+HIGH:TLSv1+HIGH:!SSLv2:!aNULL:!eNULL:!3DES:@STRENGTH)") + "\n";
+        "\n"+ _("I2P Options:") + "\n" + //<------i2p added----->
+        "  -generatei2pdestination                " + _("Generate an I2P destination, print it and exit.")+ "\n" +
+        "  -i2p=1                        " + _("Enable I2P.") + "\n" +
+        "  -onlynet=i2p                       " + _("Enable I2P only mode.") + "\n" +
+        "  -i2psessionname=<session name>         " + _("Name of an I2P session. If it is not specified, value will be \"Gostcoin-client\"") + "\n" +
+        "  -samhost=<ip or host name>           " + _("Address of the SAM bridge host. If it is not specified, value will be \"127.0.0.1\".") + "\n" +
+        "  -samport=<port>                    " + _("Port number of the SAM bridge host. If it is not specified, value will be \"7656\".") + "\n" +
+        "  -mydestination=<pub+priv i2p-keys>    " + _("Your full destination (public+private keys). If it is not specified, the client will geneterate a random destination for you. See below (Starting wallet with a permanent i2p-address) more details about this option.") +
+        "\n"; //<---i2p---->
     strUsage += "  -litemode=<n>          " + _("Disable all Masternode and Darksend related functionality (0-1, default: 0)") + "\n";
 strUsage += "\n" + _("Masternode options:") + "\n";
     strUsage += "  -masternode=<n>            " + _("Enable the client to act as a masternode (0-1, default: 0)") + "\n";
@@ -355,8 +395,48 @@ bool AppInit2(boost::thread_group& threadGroup)
     sa_hup.sa_flags = 0;
     sigaction(SIGHUP, &sa_hup, NULL);
 #endif
+//<-----i2pd------>//
+#if defined(USE_SSE2)
+    unsigned int cpuid_edx=0;
+#if !defined(MAC_OSX) && (defined(_M_IX86) || defined(__i386__) || defined(__i386))
+    // 32bit x86 Linux or Windows, detect cpuid features
+#if defined(_MSC_VER)
+    // MSVC
+    int x86cpuid[4];
+    __cpuid(x86cpuid, 1);
+    cpuid_edx = (unsigned int)buffer[3];
+#else
+    // Linux or i686-w64-mingw32 (gcc-4.6.3)
+    unsigned int eax, ebx, ecx;
+    __get_cpuid(1, &eax, &ebx, &ecx, &cpuid_edx);
+#endif
+#endif
+#endif
+
+//	if (GetBoolArg("-i2p", false))
+//	{
+		uiInterface.InitMessage(_("Creating SAM session..."));
+		if (!I2PSession::Instance ().Start () && IsI2POnly()) 
+			return InitError("Can't connect to SAM\n");
+//	}
+//<------i2p----->//
 
     // ********************************************************* Step 2: parameter interactions
+
+//<----Started i2p----->//
+
+  //if (GetBoolArg(I2P_SAM_GENERATE_DESTINATION_PARAM))
+    {
+        const SAM::FullDestination generatedDest = I2PSession::Instance().destGenerate();
+        uiInterface.ThreadSafeShowGeneratedI2PAddress(
+            "Generated I2P address",
+            generatedDest.pub,
+            generatedDest.priv,
+            I2PSession::GenerateB32AddressFromDestination(generatedDest.pub),
+            GetConfigFile().string());
+        return false;
+    }
+//<---i2p---->//
 
     nNodeLifespan = GetArg("-addrlifespan", 7);
     fUseFastIndex = GetBoolArg("-fastindex", true);
@@ -522,6 +602,7 @@ bool AppInit2(boost::thread_group& threadGroup)
         ShrinkDebugFile();
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     LogPrintf("Lux version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
+    printf("I2P module version %s\n", FormatI2PNativeFullVersion().c_str()); //<-----i2p----->
     LogPrintf("Using OpenSSL version %s\n", SSLeay_version(SSLEAY_VERSION));
     if (!fLogTimestamps)
         LogPrintf("Startup time: %s\n", DateTimeStrFormat("%x %H:%M:%S", GetTime()));
@@ -542,7 +623,10 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     if (fDaemon)
         fprintf(stdout, "Lux server starting\n");
-
+//<-----i2p---->//
+    if (!GetBoolArg("-stfu", false) && !IsI2POnly()) {
+	InitWarning("Gostcoin is running on clearnet!\n");
+    }
     int64_t nStart;
 
     // ********************************************************* Step 5: verify database integrity
@@ -602,8 +686,14 @@ bool AppInit2(boost::thread_group& threadGroup)
         std::set<enum Network> nets;
         BOOST_FOREACH(std::string snet, mapMultiArgs["-onlynet"]) {
             enum Network net = ParseNetwork(snet);
-	    if(net == NET_TOR)
-		fOnlyTor = true;
+	    if (net == NET_I2P) //use i2p instead of tor
+		fOnlyTor = false;
+
+               {
+                // listen on I2P only.
+                SoftSetBoolArg("-listen",true);
+                SoftSetBoolArg("-discover",false);
+            }
 
             if (net == NET_UNROUTABLE)
                 return InitError(strprintf(_("Unknown network specified in -onlynet: '%s'"), snet));
@@ -649,6 +739,13 @@ bool AppInit2(boost::thread_group& threadGroup)
     fDiscover = GetBoolArg("-discover", true);
     fNameLookup = GetBoolArg("-dns", true);
 
+    // -i2p can override both tor and proxy
+    if (!(mapArgs.count("-i2p") && mapArgs["-i2p"] == "0") || IsI2POnly())
+    {
+        SoftSetBoolArg("-listen",true);
+        SetReachable(NET_I2P);
+    }
+
     bool fBound = false;
     if (!fNoListen)
     {
@@ -660,13 +757,18 @@ bool AppInit2(boost::thread_group& threadGroup)
                     return InitError(strprintf(_("Cannot resolve -bind address: '%s'"), strBind));
                 fBound |= Bind(addrBind);
             }
-        } else {
+        }
+
+        else {
             struct in_addr inaddr_any;
             inaddr_any.s_addr = INADDR_ANY;
-            if (!IsLimited(NET_IPV6))
-                fBound |= Bind(CService(in6addr_any, GetListenPort()), false);
-            if (!IsLimited(NET_IPV4))
-                fBound |= Bind(CService(inaddr_any, GetListenPort()), !fBound);
+#ifdef USE_IPV6
+            fBound |= Bind(CService(in6addr_any, GetListenPort()), BF_NONE);
+#endif
+            fBound |= Bind(CService(inaddr_any, GetListenPort()), !fBound ? BF_REPORT_ERROR : BF_NONE);
+
+            if (!IsLimited(NET_I2P))
+                fBound |= BindNativeI2P();
         }
         if (!fBound)
             return InitError(_("Failed to listen on any port. Use -listen=0 if you want this."));
