@@ -10,9 +10,19 @@ CONFIG += static
 QT += core gui network printsupport
 QMAKE_CXXFLAGS = -fpermissive
 
+	INCLUDEPATH += src src/json src/qt i2psam
+	QT += core gui network
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
-    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0 BOOST_NO_CXX11_SCOPED_ENUMS
+	DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE BOOST_NO_CXX11_SCOPED_ENUMS
+	 CONFIG += no_include_pwd
+	CONFIG += no_include_pwd
+	CONFIG += thread
+	CONFIG += thread
+	SUBDIR = i2psam
+	SUBDIR = i2psam
+
 }
 
 
@@ -75,9 +85,11 @@ contains(RELEASE, 1) {
     }
 }
 
+ # for extra security (see: https://wiki.debian.org/Hardening): this flag is GCC compiler-specific
+
 !win32 {
 # for extra security against potential buffer overflows: enable GCCs Stack Smashing Protection
-QMAKE_CXXFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
+QMAKE_CXXFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -std=c++11
 QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
 # We need to exclude this for Windows cross compile with MinGW 4.2.x, as it will result in a non-working executable!
 # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
