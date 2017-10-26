@@ -60,7 +60,7 @@ ClientControlPage::ClientControlPage(QWidget *parent) :
 
         // READ LIVE (CURRENT) VERSION
         //open a file
-        QFile iniFILE(QDir::currentPath() + "/lUX.cfg");
+        QFile iniFILE(QDir::currentPath() + "/lee.cfg");
        // if(!iniFILE.open(QIODevice::ReadOnly | QIODevice::Text))
             // error out if not accesable
            // QMessageBox::information(0,"info",iniFILE.errorString());
@@ -102,7 +102,7 @@ ClientControlPage::~ClientControlPage()
 
 void ClientControlPage::on_chck4_upd8_clicked()
 {
-    QFile iniFILE(QDir::currentPath() + "/lUX.cfg");
+    QFile iniFILE(QDir::currentPath() + "/lee.cfg");
     if(!iniFILE.open(QIODevice::ReadOnly | QIODevice::Text))
         // error out if not accesable
         QMessageBox::information(0,"info",iniFILE.errorString());
@@ -121,7 +121,7 @@ void ClientControlPage::on_chck4_upd8_clicked()
     }
 
     QProcess *process = new QProcess();
-    QString fileX = QDir::currentPath() + "/lux-qt.exe";
+    QString fileX = QDir::currentPath() + "/lee-qt.exe";
     process->start(fileX);
 }
 
@@ -161,13 +161,13 @@ void ClientControlPage::on_CS_submit_clicked()
 void ClientControlPage::on_BR_submit_clicked()
 {
     QMessageBox::information(this, "Coming in v2.3",
-                       "Please email your error to contact@luxcoin.tect",
+                       "Please email your error to contact@leecoin.tect",
                        QMessageBox::Ok );
 }
 
 void ClientControlPage::on_AU_apply_clicked()
 {
-    QFile iniFILE(QDir::currentPath() + "/lUX.cfg");
+    QFile iniFILE(QDir::currentPath() + "/lee.cfg");
     if(!iniFILE.open(QIODevice::ReadOnly | QIODevice::Text))
         // error out if not accesable
         QMessageBox::information(0,"info",iniFILE.errorString());

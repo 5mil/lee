@@ -1,7 +1,7 @@
-TOR Support in Lux
+TOR Support in lee
 =======================
 
-It is possible to run Lux as a Tor hidden service, and connect to such services.
+It is possible to run lee as a Tor hidden service, and connect to such services.
 
 The following directions assume you have a Tor proxy running on port 9050. Many distributions
 default to having a SOCKS proxy listening on port 9050, but others may not.
@@ -10,10 +10,10 @@ https://www.torproject.org/docs/faq.html.en#TBBSocksPort for how to properly
 configure Tor.
 
 
-1. Run Lux behind a Tor proxy
+1. Run lee behind a Tor proxy
 ---------------------------------
 
-The first step is running Lux behind a Tor proxy. This will already make all
+The first step is running lee behind a Tor proxy. This will already make all
 outgoing connections be anonimized, but more is possible.
 
 -proxy=ip:port  Set the proxy server. If SOCKS5 is selected (default), this proxy
@@ -34,26 +34,26 @@ outgoing connections be anonimized, but more is possible.
 
 In a typical situation, this suffices to run behind a Tor proxy:
 
-  ./luxd -proxy=127.0.0.1:9050
+  ./leed -proxy=127.0.0.1:9050
 
 
-2. Run a Lux hidden server
+2. Run a lee hidden server
 ------------------------------
 
 If you configure your Tor system accordingly, it is possible to make your node also
 reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equivalent
 config file):
 
-  HiddenServiceDir /var/lib/tor/lux-service/
+  HiddenServiceDir /var/lib/tor/lee-service/
   HiddenServicePort 61510 127.0.0.1:61510
 
 The directory can be different of course, but (both) port numbers should be equal to
-your luxd's P2P listen port (61510 by default).
+your leed's P2P listen port (61510 by default).
 
 -externalip=X   You can tell litecoin about its publicly reachable address using
                 this option, and this can be a .onion address. Given the above
                 configuration, you can find your onion address in
-                /var/lib/tor/lux-service/hostname. Onion addresses are given
+                /var/lib/tor/lee-service/hostname. Onion addresses are given
                 preference for your node to advertize itself with, for connections
                 coming from unroutable addresses (such as 127.0.0.1, where the
                 Tor proxy typically runs).
@@ -70,18 +70,18 @@ your luxd's P2P listen port (61510 by default).
 
 In a typical situation, where you're only reachable via Tor, this should suffice:
 
-  ./luxd -proxy=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -listen
+  ./leed -proxy=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -listen
 
 (obviously, replace the Onion address with your own). If you don't care too much
 about hiding your node, and want to be reachable on IPv4 as well, additionally
 specify:
 
-  ./luxd ... -discover
+  ./leed ... -discover
 
 and open port 61510 on your firewall (or use -upnp).
 
 If you only want to use Tor to reach onion addresses, but not use it as a proxy
 for normal IPv4/IPv6 communication, use:
 
-  ./luxd -tor=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -discover
+  ./leed -tor=127.0.0.1:9050 -externalip=57qr3yd1nyntf5k.onion -discover
 

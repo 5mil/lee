@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = lux-android-qt
+TARGET = lee-android-qt
 VERSION = 0.8.5.10
 INCLUDEPATH += ../src ../src/json ../src/qt ../i2psam
 QT += core gui network androidextras

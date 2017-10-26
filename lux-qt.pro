@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = lux-qt
+TARGET = lee-qt
 VERSION = 2.2.1
 INCLUDEPATH += src src/json src/qt src/qt/plugins/mrichtexteditor
 DEFINES += ENABLE_WALLET
@@ -534,8 +534,8 @@ macx:HEADERS += src/qt/macdockiconhandler.h
 macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
-macx:ICON = src/qt/res/icons/lux.icns
-macx:TARGET = "Lux-Qt"
+macx:ICON = src/qt/res/icons/lee.icns
+macx:TARGET = "lee-Qt"
 macx:QMAKE_CFLAGS_THREAD += -pthread
 macx:QMAKE_LFLAGS_THREAD += -pthread
 macx:QMAKE_CXXFLAGS_THREAD += -pthread

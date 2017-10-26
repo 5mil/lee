@@ -20,7 +20,7 @@
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 bool DecodeBase58(const char* psz, std::vector<unsigned char>& vchRet) {
-    CAutoBN_CLUX pctx;
+    CAutoBN_Clee pctx;
     vchRet.clear();
     CBigNum bn58 = 58;
     CBigNum bn = 0;
@@ -226,11 +226,11 @@ int CBase58Data::CompareTo(const CBase58Data& b58) const {
 }
 
 namespace {
-    class CLuxcoinAddressVisitor : public boost::static_visitor<bool> {
+    class CleecoinAddressVisitor : public boost::static_visitor<bool> {
     private:
-        CLuxcoinAddress *addr;
+        CleecoinAddress *addr;
     public:
-        CLuxcoinAddressVisitor(CLuxcoinAddress *addrIn) : addr(addrIn) { }
+        CleecoinAddressVisitor(CleecoinAddress *addrIn) : addr(addrIn) { }
 
         bool operator()(const CKeyID &id) const { return addr->Set(id); }
         bool operator()(const CScriptID &id) const { return addr->Set(id); }
@@ -250,28 +250,28 @@ namespace {
     };
 };
 
-bool CLuxcoinAddress::Set(const CKeyID &id) {
+bool CleecoinAddress::Set(const CKeyID &id) {
     SetData(Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS), &id, 20);
     return true;
 }
 
-bool CLuxcoinAddress::Set(const CScriptID &id) {
+bool CleecoinAddress::Set(const CScriptID &id) {
     SetData(Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS), &id, 20);
     return true;
 }
 
-bool CLuxcoinAddress::Set(const CTxDestination &dest) {
-    return boost::apply_visitor(CLuxcoinAddressVisitor(this), dest);
+bool CleecoinAddress::Set(const CTxDestination &dest) {
+    return boost::apply_visitor(CleecoinAddressVisitor(this), dest);
 }
 
-bool CLuxcoinAddress::IsValid() const {
+bool CleecoinAddress::IsValid() const {
     bool fCorrectSize = vchData.size() == 20;
     bool fKnownVersion = vchVersion == Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS) ||
                          vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS);
     return fCorrectSize && fKnownVersion;
 }
 
-CTxDestination CLuxcoinAddress::Get() const {
+CTxDestination CleecoinAddress::Get() const {
     if (!IsValid())
         return CNoDestination();
     uint160 id;
@@ -284,7 +284,7 @@ CTxDestination CLuxcoinAddress::Get() const {
         return CNoDestination();
 }
 
-bool CLuxcoinAddress::GetKeyID(CKeyID &keyID) const {
+bool CleecoinAddress::GetKeyID(CKeyID &keyID) const {
     if (!IsValid() || vchVersion != Params().Base58Prefix(CChainParams::PUBKEY_ADDRESS))
         return false;
     uint160 id;
@@ -293,34 +293,34 @@ bool CLuxcoinAddress::GetKeyID(CKeyID &keyID) const {
     return true;
 }
 
-bool CLuxcoinAddress::IsScript() const {
+bool CleecoinAddress::IsScript() const {
     return IsValid() && vchVersion == Params().Base58Prefix(CChainParams::SCRIPT_ADDRESS);
 }
 
-void CLuxcoinSecret::SetKey(const CKey& vchSecret) {
+void CleecoinSecret::SetKey(const CKey& vchSecret) {
     assert(vchSecret.IsValid());
     SetData(Params().Base58Prefix(CChainParams::SECRET_KEY), vchSecret.begin(), vchSecret.size());
     if (vchSecret.IsCompressed())
         vchData.push_back(1);
 }
 
-CKey CLuxcoinSecret::GetKey() {
+CKey CleecoinSecret::GetKey() {
     CKey ret;
     ret.Set(&vchData[0], &vchData[32], vchData.size() > 32 && vchData[32] == 1);
     return ret;
 }
 
-bool CLuxcoinSecret::IsValid() const {
+bool CleecoinSecret::IsValid() const {
     bool fExpectedFormat = vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1);
     bool fCorrectVersion = vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY);
     return fExpectedFormat && fCorrectVersion;
 }
 
-bool CLuxcoinSecret::SetString(const char* pszSecret) {
+bool CleecoinSecret::SetString(const char* pszSecret) {
     return CBase58Data::SetString(pszSecret) && IsValid();
 }
 
-bool CLuxcoinSecret::SetString(const std::string& strSecret) {
+bool CleecoinSecret::SetString(const std::string& strSecret) {
     return SetString(strSecret.c_str());
 }
 

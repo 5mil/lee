@@ -49,10 +49,10 @@ public:
         // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
         // a large 4-byte int at any alignment.
         pchMessageStart[0] = 0x64; // Modified pch messagestart by 216k155. 
-        pchMessageStart[1] = 0x1a;
-        pchMessageStart[2] = 0x84;
-        pchMessageStart[3] = 0x3l;
-        vAlertPubKey = ParseHex("042d13c016ed91528241bcff222989769417eb10cdb679228c91e26e26900eb9fd053cd9f16a9a2894ad5ebbd551be1a4bd23bd55023679be17f0bd3a16e6fbeba"); // Lux coin modified pubkey 
+        pchMessageStart[1] = 0xa2;
+        pchMessageStart[2] = 0x80;
+        pchMessageStart[3] = 0x34;
+        vAlertPubKey = ParseHex("042d13c016ed91528241bcff222989769417eb10cdb679228c91e26e26900eb9fd053cd9f16a9a2894ad5ebbd551be1a4bd23bd55023679be17f0bd3a16e6fbeba"); // lee coin modified pubkey 
         nDefaultPort = 28666;
         nRPCPort = 9888;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 20);
@@ -61,7 +61,7 @@ public:
         // be spent as it did not originally exist in the database.
         
    
-        const char* pszTimestamp = "Lux - Implemented New PHI Algo PoW/PoS Hybird - Parallel Masternode - ThankYou - 216k155"; // Input Activation code to activate blockchain
+        const char* pszTimestamp = "lee - Implemented New PHI Algo PoW/PoS Hybird - Parallel Masternode - ThankYou - 216k155"; // Input Activation code to activate blockchain
         std::vector<CTxIn> vin;
         vin.resize(1);
         vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -89,7 +89,7 @@ public:
         vSeeds.push_back(CDNSSeedData("sd2", "45.63.25.110"));
         vSeeds.push_back(CDNSSeedData("sd3", "45.76.79.185"));
    
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,48); // LUX Start letter L
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,48); // lee Start letter L
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,48); 
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,155);
         base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x07)(0x28)(0xA2)(0x4E).convert_to_container<std::vector<unsigned char> >();
@@ -126,8 +126,8 @@ public:
         // a large 4-byte int at any alignment.
         pchMessageStart[0] = 0xe1;
         pchMessageStart[1] = 0xc4;
-        pchMessageStart[2] = 0xf8;
-        pchMessageStart[3] = 0x21;
+        pchMessageStart[2] = 0xf2;
+        pchMessageStart[3] = 0x20;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
         vAlertPubKey = ParseHex("04cc24ab003c828cdd9cf4db2ebbde8e1cecb3bbfa8b3127fcb9dd9b84d44112080827ed7c49a648af9fe788ff42e316aee665879c553f099e55299d6b54edd7e0"); // input pubkey for later start
         nDefaultPort = 18065;

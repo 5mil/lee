@@ -77,7 +77,7 @@ map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Lux Signed Message:\n";
+const string strMessageMagic = "lee Signed Message:\n";
 
 //extern enum Checkpoints::CPMode CheckpointsMode;
 

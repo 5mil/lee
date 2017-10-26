@@ -1,4 +1,4 @@
-![Luxcoin Logo](https://i.imgur.com/NGH5SmR.png)
+![leecoin Logo](https://i.imgur.com/NGH5SmR.png)
 
 "Developed For Mining And Trading Pleasure" 
 
@@ -11,21 +11,21 @@ Introduction
 +Masternode + Parallel masternode implemented
 +Static PoS implemented
 +I2p full C++ implemented
-+Luxgate implemented
++leegate implemented
 
-The Luxcore Project  is a decentralized peer-to-peer banking financial platform, created under an open source license, featuring a built-in cryptocurrency, end-to-end encrypted messaging and decentralized marketplace. The decentralized network aims to provide anonymity and privacy for everyone through a simple user-friendly interface by taking care of all the advanced cryptography in the background. 
+The leecore Project  is a decentralized peer-to-peer banking financial platform, created under an open source license, featuring a built-in cryptocurrency, end-to-end encrypted messaging and decentralized marketplace. The decentralized network aims to provide anonymity and privacy for everyone through a simple user-friendly interface by taking care of all the advanced cryptography in the background. 
 
-* [Website](https://luxcore.io)
-* [Website](https://luxcoin.tech)
-* [Blog](https://reddit.com/r/LUXCoin)
-* [Block Explorer](https://explorer.luxcoin.xyz/)
+* [Website](https://leecore.io)
+* [Website](https://leecoin.tech)
+* [Blog](https://reddit.com/r/leeCoin)
+* [Block Explorer](https://explorer.leecoin.xyz/)
 * [Forum](https://bitcointalk.org/index.php?topic=2254046.0)
 
 
 
 Releases
 ===========================
-[Click on this link to go to the latest release - v2.2.1](https://github.com/216k155/lux/releases/latest)
+[Click on this link to go to the latest release - v2.2.1](https://github.com/216k155/lee/releases/latest)
 
 Supported Operating Systems:
 * Linux (64 bit)
@@ -67,9 +67,9 @@ Development process
 +Fixed qt version missmatch
 
 
-Lux Detail:
+lee Detail:
 -----------
-lux.conf
+lee.conf
 	server=1
 
 	daemon=1
@@ -90,7 +90,7 @@ PoW rewards
 -----------
 	// miner's coin base reward
 	// First block reward                              -----------------------(Official reward)---------------------------
-	// Initilised B'd reward for LUX at block 1001000  -----------------------(Special event)-----------------------------
+	// Initilised B'd reward for lee at block 1001000  -----------------------(Special event)-----------------------------
 
     int64_t GetProofOfWorkReward(int64_t nFees, int nHeight)
     {
@@ -106,13 +106,13 @@ PoW rewards
     }
         else if(pindexBest->nHeight == 501)            // Official Bonus Rewards 
     {
-        nSubsidy = 1000 * COIN; // 1000                // 1000 LUX for the first block mined after instamine protection
+        nSubsidy = 1000 * COIN; // 1000                // 1000 lee for the first block mined after instamine protection
     }
         else if(pindexBest->nHeight < 1000000)         // Second halving - Initilised normal blockchain
     {
         nSubsidy = 10 * COIN;  // ~10m
     }
-        else if(pindexBest->nHeight < 1001000)         // Third halving - Superblock rewards | Happy Birthday Lux 1 Year | 10/10/2018 | 30 LUX/block reward 
+        else if(pindexBest->nHeight < 1001000)         // Third halving - Superblock rewards | Happy Birthday lee 1 Year | 10/10/2018 | 30 lee/block reward 
     {
         nSubsidy = 30 * COIN;  // ~30,000 reward to miner
     }
@@ -158,7 +158,7 @@ PoS rewards
 
 Masternodes Requirement:
 ------------------------
-	static const int64_t DARKSEND_COLLATERAL = (16120*COIN);    //161.20 LUX 
+	static const int64_t DARKSEND_COLLATERAL = (16120*COIN);    //161.20 lee 
 	static const int64_t DARKSEND_FEE = (0.002*COIN);
 	static const int64_t DARKSEND_POOL_MAX = (1999999.99*COIN);
 
@@ -176,9 +176,9 @@ Note: Not finished yet, still need some work.
 
 06/10/2017 ------> Final test before launch ( 06/10/2017 - 09/10/2017)
 
-07/10/2017 ------> Changed bhcoin to lux ( Trial Version v3)
+07/10/2017 ------> Changed bhcoin to lee ( Trial Version v3)
 
-09/10/2017 ------> Updated New Trial Version Lux - PHI | PoW/PoS Hybrid - Parallel Masternode Implemented | I2pd Networks Remote Activation
+09/10/2017 ------> Updated New Trial Version lee - PHI | PoW/PoS Hybrid - Parallel Masternode Implemented | I2pd Networks Remote Activation
 
 -------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ Note: Not finished yet, still need some work.
 =========
 -Unix daemon compile:
 
-	cd lux
+	cd lee
 
 	sudo sh install-dependencies.sh install
 
@@ -202,7 +202,7 @@ Note: Not finished yet, still need some work.
 
 -Unix QT wallet compile:
 
-	cd lux
+	cd lee
 
 	qmake USE_QRCODE=1
 

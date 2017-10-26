@@ -398,11 +398,11 @@ void BlockBrowser::updateExplorer(bool block)
         QString QOutputs = QString::fromUtf8(outputs.c_str());
         QString QInputs = QString::fromUtf8(inputs.c_str());
         QString QFees = QString::number(fees, 'f', 6);
-        ui->valueBox->setText(QValue + " LUX");
+        ui->valueBox->setText(QValue + " lee");
         ui->txID->setText(QID);
         ui->outputBox->setText(QOutputs);
         ui->inputBox->setText(QInputs);
-        ui->feesBox->setText(QFees + " LUX");
+        ui->feesBox->setText(QFees + " lee");
     }
 }
 
@@ -545,11 +545,11 @@ void BlockBrowser::updateStatistics()
 
     if(volume > volumePrevious)
     {
-        ui->volumeBox_2->setText("<b><font color=\"green\">" + qVolume + " LUX" + "</font></b>");
+        ui->volumeBox_2->setText("<b><font color=\"green\">" + qVolume + " lee" + "</font></b>");
     } else if(volume < volumePrevious) {
-        ui->volumeBox_2->setText("<b><font color=\"red\">" + qVolume + " LUX" + "</font></b>");
+        ui->volumeBox_2->setText("<b><font color=\"red\">" + qVolume + " lee" + "</font></b>");
     } else {
-        ui->volumeBox_2->setText(qVolume + " LUX");
+        ui->volumeBox_2->setText(qVolume + " lee");
     }
     updatePrevious(nHeight, nMinWeight, nNetworkWeight, phase, nSubsidy, pHardness, pHardness2, pPawrate2, Qlpawrate, peers, volume);
 }

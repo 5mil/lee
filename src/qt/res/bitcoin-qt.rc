@@ -1,4 +1,4 @@
-IDI_ICON1 ICON DISCARDABLE "icons/lux.ico"
+IDI_ICON1 ICON DISCARDABLE "icons/lee.ico"
 
 #include <windows.h>             // needed for VERSIONINFO
 #include "../../clientversion.h" // holds the needed client version information
@@ -18,14 +18,14 @@ BEGIN
     BEGIN
         BLOCK "216k155" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Lux"
-            VALUE "FileDescription",    "Lux-Qt (OSS GUI client for Lux)"
+            VALUE "CompanyName",        "lee"
+            VALUE "FileDescription",    "lee-Qt (OSS GUI client for lee)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "lux-qt"
+            VALUE "InternalName",       "lee-qt"
             VALUE "LegalCopyright",     "Copyright © 2017 by 216k155 @Dra"
             VALUE "LegalTrademarks1",   "Distributed under the MIT/X11 software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "lux-qt.exe"
-            VALUE "ProductName",        "Lux-Qt"
+            VALUE "OriginalFilename",   "lee-qt.exe"
+            VALUE "ProductName",        "lee-Qt"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

@@ -1,5 +1,5 @@
 ---
-name: "lux-deps"
+name: "lee-deps"
 suites:
 - "trusty"
 architectures:
@@ -135,5 +135,5 @@ script: |
   #
   #
   cd $STAGING
-  find include lib bin host | sort | zip -X@ $OUTDIR/lux-deps-linux${GBUILD_BITS}-gitian.zip
+  find include lib bin host | sort | zip -X@ $OUTDIR/lee-deps-linux${GBUILD_BITS}-gitian.zip
 

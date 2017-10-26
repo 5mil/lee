@@ -51,11 +51,11 @@ void OptionsModel::Init()
     if (!settings.contains("nDarksendRounds"))
         settings.setValue("nDarksendRounds", 2);
 
-    if (!settings.contains("nAnonymizeLuxAmount"))
-        settings.setValue("nAnonymizeLuxAmount", 1000);
+    if (!settings.contains("nAnonymizeleeAmount"))
+        settings.setValue("nAnonymizeleeAmount", 1000);
 
     nDarksendRounds = settings.value("nDarksendRounds").toLongLong();
-    nAnonymizeLuxAmount = settings.value("nAnonymizeLuxAmount").toLongLong();
+    nAnonymizeleeAmount = settings.value("nAnonymizeleeAmount").toLongLong();
 
     // These are shared with core Bitcoin; we want
     // command-line options to override the GUI settings:
@@ -70,8 +70,8 @@ void OptionsModel::Init()
 
     if (settings.contains("nDarksendRounds"))
         SoftSetArg("-darksendrounds", settings.value("nDarksendRounds").toString().toStdString());
-    if (settings.contains("nAnonymizeLuxAmount"))
-        SoftSetArg("-anonymizeLuxamount", settings.value("nAnonymizeLuxAmount").toString().toStdString());
+    if (settings.contains("nAnonymizeleeAmount"))
+        SoftSetArg("-anonymizeleeamount", settings.value("nAnonymizeleeAmount").toString().toStdString());
 }
 
 int OptionsModel::rowCount(const QModelIndex & parent) const
@@ -216,10 +216,10 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             settings.setValue("nDarksendRounds", nDarksendRounds);
             emit darksendRoundsChanged(nDarksendRounds);
             break;
-        case anonymizeLuxAmount:
-            nAnonymizeLuxAmount = value.toInt();
-            settings.setValue("nAnonymizeLuxAmount", nAnonymizeLuxAmount);
-            emit anonymizeLuxAmountChanged(nAnonymizeLuxAmount);
+        case anonymizeleeAmount:
+            nAnonymizeleeAmount = value.toInt();
+            settings.setValue("nAnonymizeleeAmount", nAnonymizeleeAmount);
+            emit anonymizeleeAmountChanged(nAnonymizeleeAmount);
             break;
         default:
             break;

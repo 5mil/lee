@@ -114,7 +114,7 @@ INPUT(
 ./build/qvalidatedtextedit.o
 ./build/mrichtextedit.o
 ./build/rpcsmessage.o
-./build/lux-qt_plugin_import.o
+./build/lee-qt_plugin_import.o
 ./build/qrc_bitcoin.o
 ./build/moc_bitcoingui.o
 ./build/moc_transactiontablemodel.o

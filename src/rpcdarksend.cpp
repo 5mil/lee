@@ -37,7 +37,7 @@ void SendMoney(const CTxDestination &address, CAmount nValue, CWalletTx& wtxNew,
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
 
-    // Parse Lux address
+    // Parse lee address
     CScript scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
@@ -59,8 +59,8 @@ Value darksend(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() == 0)
         throw runtime_error(
-            "darksend <Luxaddress> <amount>\n"
-            "Luxaddress, reset, or auto (AutoDenominate)"
+            "darksend <leeaddress> <amount>\n"
+            "leeaddress, reset, or auto (AutoDenominate)"
             "<amount> is a real and is rounded to the nearest 0.00000001"
             + HelpRequiringPassphrase());
 
@@ -83,14 +83,14 @@ Value darksend(const Array& params, bool fHelp)
 
     if (params.size() != 2)
         throw runtime_error(
-            "darksend <Luxaddress> <amount>\n"
-            "Luxaddress, denominate, or auto (AutoDenominate)"
+            "darksend <leeaddress> <amount>\n"
+            "leeaddress, denominate, or auto (AutoDenominate)"
             "<amount> is a real and is rounded to the nearest 0.00000001"
             + HelpRequiringPassphrase());
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Lux address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid lee address");
 
     // Amount
     int64_t nAmount = AmountFromValue(params[1]);
