@@ -1100,40 +1100,38 @@ static CBigNum GetProofOfStakeLimit(int nHeight)
         return bnProofOfStakeLimit;
 }
 
-// miner's coin base reward
-// First block reward                              -----------------------(Official reward)---------------------------
-// Initilised B'd reward for LUX at block 1001000  -----------------------(Special event)-----------------------------
+// LEE's coin base reward
 int64_t GetProofOfWorkReward(int64_t nFees, int nHeight)
 {
     int64_t nSubsidy = 1 * COIN;
 
     if(pindexBest->nHeight == 1)
     {
-        nSubsidy = 3000000 * COIN;                     // Initilised static pre-mine
+        nSubsidy = 420 * COIN;                     // initial block.
     }
-        else if(pindexBest->nHeight < 500)             // First halving - Activated instamine protection 
+        else if(pindexBest->nHeight < 100)             // First Blocks. 
     {
-        nSubsidy = 1 * COIN;   // ~500
+        nSubsidy = 4200 * COIN; 
     }
-        else if(pindexBest->nHeight == 501)            // Official Bonus Rewards 
+        else if(pindexBest->nHeight < 112000)       // Half at 112000 block
     {
-        nSubsidy = 1000 * COIN; // 1000                // 1000 LUX for the first block mined after instamine protection
+        nSubsidy = 25 * COIN;                
     }
-        else if(pindexBest->nHeight < 1000000)         // Second halving - Initilised normal blockchain
+        else if(pindexBest->nHeight < 224000)         // Half again at 224000 block
     {
-        nSubsidy = 10 * COIN;  // ~10m
+        nSubsidy = 12.5 * COIN;                        
     }
-        else if(pindexBest->nHeight < 1001000)         // Third halving - Superblock rewards | Happy Birthday Lux 1 Year | 10/10/2018 | 30 LUX/block reward 
+        else if(pindexBest->nHeight < 224420)         // 420 coins per block for 420 blocks 
     {
-        nSubsidy = 30 * COIN;  // ~30,000 reward to miner
+        nSubsidy = 420 * COIN;          
     }
-        else if(pindexBest->nHeight < 5000000)         // Last halving - Re-activate normal blockchain
+        else if(pindexBest->nHeight < 336000)         // 6.25 coin per block
     {
-        nSubsidy = 10 * COIN;  // ~10m
+        nSubsidy = 6.25 * COIN; 
     }
-		else if(pindexBest->nHeight < 6000000) // PoW end block 6m - Reduce block reward | Automatic initilised new blockchain after 6m blocks 
+		else if(pindexBest->nHeight < 6000000) // 3.125 coin until block 6 million then 1 coin forever
     {
-        nSubsidy = 10 * COIN;  // ~10m
+        nSubsidy = 3.125 * COIN; 
     }
         else
     {
@@ -1166,7 +1164,7 @@ int64_t GetProofOfStakeReward(int64_t nCoinAge, int64_t nFees, int nHeight)
 }
 
 
-static int64_t nTargetTimespan = 30 * 60;  // 30 mins
+static int64_t nTargetTimespan = 3 * 60;  // 3 mins
 
 //
 // maximum nBits value could possible be required nTime after
@@ -1180,7 +1178,7 @@ unsigned int ComputeMaxBits(CBigNum bnTargetLimit, unsigned int nBase, int64_t n
     {
         // Maximum 10% adjustment per day...
         bnResult *= 2;
-        nTime -= 24 * 60 * 60;
+        nTime -= 12 * 60 * 60;
     }
     if (bnResult > bnTargetLimit)
         bnResult = bnTargetLimit;
