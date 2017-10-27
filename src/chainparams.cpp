@@ -61,7 +61,7 @@ public:
         // be spent as it did not originally exist in the database.
         
    
-        const char* pszTimestamp = "lee - Implemented New PHI Algo PoW/PoS Hybird - Parallel Masternode - ThankYou - 216k155"; // Input Activation code to activate blockchain
+        const char* pszTimestamp = "October 27th, 2017 - a cat runs across the field at The Baltimore Ravens vs Miami Dolphins NFL game"; // Input Activation code to activate blockchain
         std::vector<CTxIn> vin;
         vin.resize(1);
         vin[0].scriptSig = CScript() << 0 << CBigNum(42) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -73,18 +73,47 @@ public:
         genesis.hashPrevBlock = 0;
         genesis.hashMerkleRoot = genesis.BuildMerkleTree();
         genesis.nVersion = 1;
-        genesis.nTime    = 1507656633; // epochtime 15:00:00 oct/10/2017
+        genesis.nTime    = 1509127706; // epochtime oct/27/2017
         genesis.nBits    = 0x1e0fffff; // Generated nBits. Input right nBits to prevent nBits below minimum works error 
-        genesis.nNonce   = 986946; // Input nNonce 0
+        genesis.nNonce   = 0; // Input nNonce 0
 
         // Generate genesis hash should take a while as exploit protection active in main.cpp
         // Anti exploitation activated. Note: need to wait until the generation finished for the right genesis block generated. Otherwise none of them are valid
 
         hashGenesisBlock = genesis.GetHash();
         
-        assert(hashGenesisBlock == uint256("0x00000759bb3da130d7c9aedae170da8335f5a0d01a9007e4c8d3ccd08ace6a42")); 
-        assert(genesis.hashMerkleRoot == uint256("0xe08ae0cfc35a1d70e6764f347fdc54355206adeb382446dd54c32cd0201000d3"));
+        assert(hashGenesisBlock == uint256("0x")); 
+        assert(genesis.hashMerkleRoot == uint256("0x"));
+if (true && block.GetHash() != hashGenesisBlock)
+        {
+            printf("Searching for genesis block...\n");
+            // This will figure out a valid hash and Nonce if you're
+            // creating a different genesis block:
+            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+            uint256 thash;
+            char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
 
+            loop
+            {
+                scrypt_1024_1_1_256_sp(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+                if (thash <= hashTarget)
+                    break;
+                if ((block.nNonce & 0xFFF) == 0)
+                {
+                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                }
+                ++block.nNonce;
+                if (block.nNonce == 0)
+                {
+                    printf("NONCE WRAPPED, incrementing time\n");
+                    ++block.nTime;
+                }
+            }
+            printf("block.nTime = %u \n", block.nTime);
+            printf("block.nNonce = %u \n", block.nNonce);
+            printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+            
+            }
         vSeeds.push_back(CDNSSeedData("sd1", "45.32.245.217"));
         vSeeds.push_back(CDNSSeedData("sd2", "45.63.25.110"));
         vSeeds.push_back(CDNSSeedData("sd3", "45.76.79.185"));
