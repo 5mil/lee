@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.18.3
 LABEL authors "Mikal Villa <mikal@sigterm.no>, Darknet Villain <supervillain@riseup.net>"
 
 # Expose git branch, tag and URL variables as arguments
