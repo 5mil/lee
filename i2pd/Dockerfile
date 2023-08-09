@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.18.3
 
 MAINTAINER Mikal Villa <mikal@sigterm.no>
 
